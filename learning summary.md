@@ -419,6 +419,85 @@ Teacher.prototype.constructor = Teacher;//修正
 
 任何您想要被继承的方法都应该定义在构造函数的prototype对象里，并且永远使用父类的prototype来创造子类的prototype，这样才不会打乱类继承结构。
 
+## 操作文档
+
+### 创建放置节点
+
+```javascript
+var sect = document.querySelector('section');
+var para = document.createElement('p');
+para.textContent = 'We hope you enjoyed the ride.';
+sect.appendChild(para);
+var text = document.createTextNode(' — the premier source for web development knowledge.');//创建文本节点
+var linkPara = document.querySelector('p');
+linkPara.appendChild(text);
+```
+
+### 移动和删除元素
+
+``` javascript
+sect.appendChild(linkPara);
+// 这样可以把段落下移到section的底部。你可能想过要做第二个副本，但是情况并非如此 — linkPara是指向该段落唯一副本的引用。如果你想做一个副本并也把它添加进去，只能用Node.cloneNode() 方法来替代。
+sect.removeChild(linkPara);//删除节点
+linkPara.parentNode.removeChild(linkPara);//删除节点自身
+```
+
+### 操作样式
+
+```javascript
+para.style.color = 'white';
+para.style.backgroundColor = 'black';
+para.style.padding = '10px';
+para.style.width = '250px';
+para.style.textAlign = 'center';
+//注意: CSS样式的JavaSript属性版本以小驼峰式命名法书写，而CSS版本带连接符号（backgroundColor 对 background-color）。确保你不会混淆，否则就不能工作。
+
+//另一个方法 在HTML的<head>中添加
+<style>
+.highlight {
+  color: white;
+  background-color: black;
+  padding: 10px;
+  width: 250px;
+  text-align: center;
+}
+</style>
+
+para.setAttribute('class', 'highlight');
+```
+
+两种方式各有优缺点，选择哪种取决于你自己。第一种方式无需安装，适合简单应用，第二种方式更加正统（没有CSS和JavaScript的混合，没有内联样式，而这些被认为是不好的体验）。当你开始构建更大更具吸引力的应用时，你可能会更多地使用第二种方法，但这完全取决于你自己。
+
+## 画图
+
+## web浏览器的重要部分
+
+### window
+
+window是载入浏览器的标签，在JavaScript中用Window对象来表示，使用这个对象的可用方法，你可以返回窗口的大小（参见Window.innerWidth和Window.innerHeight），操作载入窗口的文档，存储客户端上文档的特殊数据（例如使用本地数据库或其他存储设备），为当前窗口绑定event handler，等等。
+
+### navigator
+
+navigator表示浏览器存在于web上的状态和标识（即用户代理）。在JavaScript中，用Navigator来表示。你可以用这个对象获取一些信息，比如来自用户摄像头的地理信息、用户偏爱的语言、多媒体流等等。
+
+### document
+
+document（在浏览器中用DOM表示）是载入窗口的实际页面，在JavaScript中用Document 对象表示，你可以用这个对象来返回和操作文档中HTML和CSS上的信息。例如获取DOM中一个元素的引用，修改其文本内容，并应用新的样式，创建新的元素并添加为当前元素的子元素，甚至把他们一起删除。
+
+## 终端
+
+终端就是连接内核与交互界面的这座桥，它允许用户在交互界面上打开一个叫做「Terminal 终端」的应用程序，在其中输入命令，系统会直接给出反馈。
+
+因为终端这座桥，实际允许用户间接控制系统内核，也就是系统的大脑，因此它理论上具备控制一切的权利。
+
+## NPM
+
+Node Package Manager
+
+## 脚手架
+
+项目开始时配置的模板
+
 ## 循环补充
 
 labele语句需要与break与continue配合
@@ -494,7 +573,11 @@ Object.keys(obj) 一个表示给定对象的所有可枚举属性的字符串数
 ## Web Api 接口参考
 
 void ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+
 CanvasRenderingContext2D.arc() 是 Canvas 2D API 绘制圆弧路径的方法。 圆弧路径的圆心在 (x, y) 位置，半径为 r ，根据anticlockwise （默认为顺时针）指定的方向从 startAngle 开始绘制，到 endAngle 结束。
+
+window​.onresize
+onresize属性可以用来获取或设置当前窗口的resize事件的事件处理函数
 
 ## 小技巧
 

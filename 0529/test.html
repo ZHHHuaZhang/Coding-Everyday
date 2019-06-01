@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+
+    <body>
+        <canvas id="view"></canvas>
+        <!--  -->
+        <script src="https://cdn.bootcss.com/pdf.js/2.2.2/pdf.min.js"></script>
+        <script>
+            let url = './helloWorld.pdf';
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.bootcss.com/pdf.js/2.2.2/pdf.worker.min.js';
+            let loadingTask = pdfjsLib.getDocument(url);
+            loadingTask.promise.then(function(pdf) {
+                pdf.getPage(1).then(function(page) {
+                    show(page);
+                });
+            });
+
+            function show(page){
+                let scale = 1;
+                let viewport = page.getViewport(scale);
+                console.warn(viewport);
+                let canvas = document.getElementById('view');
+                let context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                let renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            }     
+        </script>
+    </body>
+</html>
