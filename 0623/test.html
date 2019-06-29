@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    console.log(typeof arguments);    // 'undefined'
+// arguments 对象只能在函数内使用
+function test(a,b){
+    console.log(a,Object.prototype.toString.call(arguments));
+    console.log(arguments[0],arguments[1]);
+    console.log(typeof arguments[0]);
+}
+test(1,2);
+</script>
+</html>
