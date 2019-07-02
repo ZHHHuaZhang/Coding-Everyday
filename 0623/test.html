@@ -10,13 +10,20 @@
     
 </body>
 <script>
-    console.log(typeof arguments);    // 'undefined'
-// arguments 对象只能在函数内使用
-function test(a,b){
-    console.log(a,Object.prototype.toString.call(arguments));
-    console.log(arguments[0],arguments[1]);
-    console.log(typeof arguments[0]);
-}
-test(1,2);
+    var modeng = {}
+var age;
+Object.defineProperty(modeng, 'age', {
+  get: function () {
+    console.log("获取年龄");
+    return age;
+  },
+  set: function (newVal) {
+    console.log("设置年龄");
+    age = newVal;
+  }
+});
+modeng.age = 18;
+console.log(modeng.age);
+
 </script>
 </html>

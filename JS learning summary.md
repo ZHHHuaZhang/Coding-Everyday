@@ -1,5 +1,187 @@
 # JS Learning summary
 
+## 基础
+
+### 面向对象三大要素
+
+面向对象三大要素：封装、继承、多态
+
+### js基础数据类型
+
+Boolean
+Null
+Undefined
+Number
+String
+Symbol (ECMAScript 6 新定义)
+Object
+
+### 原始数据类型和引用类型的区别
+
+在内存中的存储方式不同，原始数据类型在内存中是栈存储，引用类型是堆存储 栈（stack）为自动分配的内存空间，它由系统自动释放；而堆（heap）则是动态分配的内存，大小不定也不会自动释放。
+
+## 声明
+
+### let
+
+let 语句声明一个块级作用域的本地变量，并且可选的将其初始化为一个值。
+
+```javascript
+//作用域规则
+// let声明的变量只在其声明的块或子块中可用，这一点，与var相似。二者之间最主要的区别在于var声明的变量的作用域是整个封闭函数。
+function varTest() {
+  var x = 1;
+  if (true) {
+    var x = 2;  // 同样的变量!
+    console.log(x);  // 2
+  }
+  console.log(x);  // 2
+}
+
+function letTest() {
+  let x = 1;
+  if (true) {
+    let x = 2;  // 不同的变量
+    console.log(x);  // 2
+  }
+  console.log(x);  // 1
+}
+
+//简化内部函数代码
+var list = document.getElementById("list");
+
+for (let i = 1; i <= 5; i++) {
+  var item = document.createElement("LI");
+  item.appendChild(document.createTextNode("Item " + i));
+
+  let j = i;
+  item.onclick = function (ev) {
+    console.log("Item " + j + " is clicked.");
+  };
+  list.appendChild(item);
+}
+
+//在程序或者函数的顶层，let并不会像var一样在全局对象上创造一个属性，比如
+var x = 'global';
+let y = 'global';
+console.log(this.x); // "global"
+console.log(this.y); // undefined
+
+//模仿私有接口
+var SomeConstructor;
+
+{
+    let privateScope = {};
+
+    SomeConstructor = function SomeConstructor () {
+        this.someProperty = "foo";
+        privateScope.hiddenProperty = "bar";
+    }
+
+    SomeConstructor.prototype.showPublic = function () {
+        console.log(this.someProperty); // foo
+    }
+
+    SomeConstructor.prototype.showPrivate = function () {
+        console.log(privateScope.hiddenProperty); // bar
+    }
+
+}
+
+var myInstance = new SomeConstructor();
+
+myInstance.showPublic();
+myInstance.showPrivate();
+
+console.log(privateScope.hiddenProperty); // error
+
+// 重复声明
+在同一个函数或块作用域中重复声明同一个变量会引起SyntaxError。
+if (x) {
+  let foo;
+  let foo; // SyntaxError thrown.
+}
+//在 switch 语句中只有一个块，你可能因此而遇到错误。
+let x = 1;
+switch(x) {
+  case 0:
+    let foo;
+    break;
+  case 1:
+    let foo; // SyntaxError for redeclaration.
+    break;
+}
+
+然而，需要特别指出的是，一个嵌套在 case 子句中的块会创建一个新的块作用域的词法环境，就不会产生上诉重复声明的错误。
+
+let x = 1;
+
+switch(x) {
+  case 0: {
+    let foo;
+    break;
+  }  
+  case 1: {
+    let foo;
+    break;
+  }
+}
+
+//暂存死区
+let 被创建在包含该声明的（块）作用域顶部，一般被称为“提升”。与通过  var 声明的有初始化值 undefined 的变量不同，通过 let 声明的变量直到它们的定义被执行时才初始化。在变量初始化前访问该变量会导致 ReferenceError。该变量处在一个自块顶部到初始化处理的“暂存死区”中。
+function do_something() {
+  console.log(bar); // undefined
+  console.log(foo); // ReferenceError
+  var bar = 1;
+  let foo = 2;
+}
+
+// let后跟一个函数传递的参数时将导致循环内部报错。
+function go(n){
+  for (let n of n.a) { // ReferenceError: n is not defined
+    console.log(n);
+  }
+}
+
+go({a:[1,2,3]});
+
+//循环定义中的let作用域
+var i = 0;
+for (let i = i; i < 10; i++) {
+  console.log(i);
+}
+//报错以上 let 声明的 i 将会变成 undefined；chrome 版本50.0.2661.102 (64-bit)；推荐以下写法：
+var i = 0;
+for (let l = i; l < 10; l++) {  
+　console.log(l);
+}
+
+//例子
+//let  对比 var
+// let的作用域是块，而var的作用域是函数
+var a = 5;
+var b = 10;
+
+if (a === 5) {
+  let a = 4; // The scope is inside the if-block
+  var b = 1; // The scope is inside the function
+
+  console.log(a);  // 4
+  console.log(b);  // 1
+}
+
+console.log(a); // 5
+console.log(b); // 1
+
+//let 在循环中
+for (let i = 0; i < 10; i++) {
+  console.log(i); // 0, 1, 2, 3, 4 ... 9
+}
+
+console.log(i); // i is not defined
+
+```
+
 ## Debug
 
 要解决空指针以及 undefined 或 null 值的问题， 你可以使用 typeof 操作符， 例如：
@@ -653,6 +835,7 @@ var citrus = fruits.slice(1, 3);
 //使用 slice
 // 在下例中, slice从myCar中创建了一个新数组newCar.两个数组都包含了一个myHonda对象的引用. 当myHonda的color属性改变为purple, 则两个数组中的对应元素都会随之改变.
 // 使用slice方法从myCar中创建一个newCar.
+
 var myHonda = { color: 'red', wheels: 4, engine: { cylinders: 4, size: 2.2 } };
 var myCar = [myHonda, 2, "cherry condition", "purchased 1997"];
 var newCar = myCar.slice(0, 2);
@@ -974,6 +1157,183 @@ boundGetX(); // 81
 ```
 
 ## 闭包
+
+闭包是函数和声明该函数的词法环境的组合。
+闭包就是指有权访问另一个函数作用域中的变量的函数。
+
+```javascript
+function makeFunc() {
+    var name = "Mozilla";
+    function displayName() {
+        alert(name);
+    }
+    return displayName;
+}
+
+var myFunc = makeFunc();
+myFunc();
+
+function makeFunc() {
+    var name = "Mozilla";
+    function displayName() {
+        alert(name);
+    }
+    return displayName;//返回该函数
+}
+
+var myFunc = makeFunc();//return display
+myFunc();
+//闭包是由函数以及创建该函数的词法环境组合而成。这个环境包含了这个闭包创建时所能访问的所有局部变量。
+//
+
+function makeAdder(x) {
+  return function(y) {
+    return x + y;
+  };
+}
+
+var add5 = makeAdder(5);
+var add10 = makeAdder(10);
+
+console.log(add5(2));  // 7
+console.log(add10(2)); // 12
+// add5 和 add10 都是闭包。它们共享相同的函数定义，但是保存了不同的词法环境。在 add5 的环境中，x 为 5。而在 add10 中，x 则为 10。
+//
+
+//实用的闭包节
+function makeSizer(size) {
+  return function() {
+    document.body.style.fontSize = size + 'px';
+  };
+}
+
+var size12 = makeSizer(12);
+var size14 = makeSizer(14);
+var size16 = makeSizer(16);
+
+document.getElementById('size-12').onclick = size12;
+document.getElementById('size-14').onclick = size14;
+document.getElementById('size-16').onclick = size16;
+
+<a href="#" id="size-12">12</a>
+<a href="#" id="size-14">14</a>
+<a href="#" id="size-16">16</a>
+//
+
+// 用闭包模拟私有方法
+var Counter = (function() {
+  var privateCounter = 0;
+  function changeBy(val) {
+    privateCounter += val;
+  }
+  return {
+    increment: function() {
+      changeBy(1);
+    },
+    decrement: function() {
+      changeBy(-1);
+    },
+    value: function() {
+      return privateCounter;
+    }
+  }
+})();
+
+console.log(Counter.value()); /* logs 0 */
+Counter.increment();
+Counter.increment();
+console.log(Counter.value()); /* logs 2 */
+Counter.decrement();
+console.log(Counter.value()); /* logs 1 */
+
+var Counter = (function() {
+  var privateCounter = 0;
+  function changeBy(val) {
+    privateCounter += val;
+  }
+  return {
+    increment: function() {
+      changeBy(1);
+    },
+    decrement: function() {
+      changeBy(-1);
+    },
+    value: function() {
+      return privateCounter;
+    }
+  }
+})();
+
+console.log(Counter.value()); /* logs 0 */
+Counter.increment();
+Counter.increment();
+console.log(Counter.value()); /* logs 2 */
+Counter.decrement();
+console.log(Counter.value()); /* logs 1 */
+//这个环境中包含两个私有项：名为 privateCounter 的变量和名为 changeBy 的函数。这两项都无法在这个匿名函数外部直接访问。必须通过匿名函数返回的三个公共函数访问。
+
+var makeCounter = function() {
+  var privateCounter = 0;
+  function changeBy(val) {
+    privateCounter += val;
+  }
+  return {
+    increment: function() {
+      changeBy(1);
+    },
+    decrement: function() {
+      changeBy(-1);
+    },
+    value: function() {
+      return privateCounter;
+    }
+  }  
+};
+
+var Counter1 = makeCounter();
+var Counter2 = makeCounter();
+console.log(Counter1.value()); /* logs 0 */
+Counter1.increment();
+Counter1.increment();
+console.log(Counter1.value()); /* logs 2 */
+Counter1.decrement();
+console.log(Counter1.value()); /* logs 1 */
+console.log(Counter2.value()); /* logs 0 */
+//每次调用其中一个计数器时，通过改变这个变量的值，会改变这个闭包的词法环境。然而在一个闭包内对变量的修改，不会影响到另外一个闭包中的变量。
+//
+
+
+//闭包面试题
+function fun(n,o){
+  console.log(o);
+  return {
+    fun: function(m){
+      return fun(m,n);
+    }
+  };
+}
+
+var a = fun(0);  // ?
+a.fun(1);        // ?
+a.fun(2);        // ?
+a.fun(3);        // ?
+
+var b = fun(0).fun(1).fun(2).fun(3);  // ?
+
+var c = fun(0).fun(1);  // ?
+c.fun(2);        // ?
+c.fun(3);        // ?
+undefined
+// 0
+// 0
+// 0
+// undefined, 0, 1, 2
+// undefined, 0
+// 1
+// 1
+```
+
+如果不是某些特定任务需要使用闭包，在其它函数中创建函数是不明智的，因为闭包在处理速度和内存消耗方面对脚本性能具有负面影响。
 
 ## 严格模式
 
