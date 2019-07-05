@@ -20,6 +20,77 @@ Object
 
 在内存中的存储方式不同，原始数据类型在内存中是栈存储，引用类型是堆存储 栈（stack）为自动分配的内存空间，它由系统自动释放；而堆（heap）则是动态分配的内存，大小不定也不会自动释放。
 
+## 函数
+
+### 箭头函数
+
+箭头函数表达式的语法比函数表达式更简洁，并且没有自己的this，arguments，super或 new.target。这些函数表达式更适用于那些本来需要匿名函数的地方，并且它们不能用作构造函数。
+引入箭头函数有两个方面的作用：更简短的函数并且不绑定this。
+
+```javascript
+var elements = [
+  'Hydrogen',
+  'Helium',
+  'Lithium',
+  'Beryllium'
+];
+
+elements.map(function(element) {
+  return element.length;
+}); // 返回数组：[8, 6, 7, 9]
+
+// 上面的普通函数可以改写成如下的箭头函数
+elements.map((element) => {
+  return element.length;
+}); // [8, 6, 7, 9]
+
+// 当箭头函数只有一个参数时，可以省略参数的圆括号
+elements.map(element => {
+ return element.length;
+}); // [8, 6, 7, 9]
+
+// 当箭头函数的函数体只有一个 `return` 语句时，可以省略 `return` 关键字和方法体的花括号
+elements.map(element => element.length); // [8, 6, 7, 9]
+
+// 在这个例子中，因为我们只需要 `length` 属性，所以可以使用参数解构
+// 需要注意的是字符串 `"length"` 是我们想要获得的属性的名称，而 `lengthFooBArX` 则只是个变量名，
+// 可以替换成任意合法的变量名
+elements.map(({ "length": lengthFooBArX }) => lengthFooBArX); // [8, 6, 7, 9]
+
+//不绑定this
+```
+
+### arguments
+
+arguments 是一个对应于传递给函数的参数的类数组对象。
+
+```javascript
+// arguments对象不是一个 Array 。它类似于Array，但除了length属性和索引元素之外没有任何Array属性。例如，它没有 pop 方法。但是它可以被转换为一个真正的Array：
+var args = Array.prototype.slice.call(arguments);
+var args = [].slice.call(arguments);
+
+// ES2015
+const args = Array.from(arguments);
+const args = [...arguments];
+
+// 对参数使用 typeof
+//typeof参数返回 'object'。
+console.log(typeof arguments);    // 'undefined'
+// arguments 对象只能在函数内使用
+function test(a){
+    console.log(a,Object.prototype.toString.call(arguments));
+    console.log(arguments[0],arguments[1]);
+    console.log(typeof arguments[0]);
+}
+test(1);
+/*
+1 "[object Arguments]"
+1 undefined
+number
+*/
+
+```
+
 ## 声明
 
 ### let
@@ -742,39 +813,6 @@ for (let i of arr) {
 
 // for...in 循环遍历的结果是数组元素的下标
 // for...of 遍历的结果是元素的值
-```
-
-## 函数
-
-### arguments
-
-arguments 是一个对应于传递给函数的参数的类数组对象。
-
-```javascript
-// arguments对象不是一个 Array 。它类似于Array，但除了length属性和索引元素之外没有任何Array属性。例如，它没有 pop 方法。但是它可以被转换为一个真正的Array：
-var args = Array.prototype.slice.call(arguments);
-var args = [].slice.call(arguments);
-
-// ES2015
-const args = Array.from(arguments);
-const args = [...arguments];
-
-// 对参数使用 typeof
-//typeof参数返回 'object'。
-console.log(typeof arguments);    // 'undefined'
-// arguments 对象只能在函数内使用
-function test(a){
-    console.log(a,Object.prototype.toString.call(arguments));
-    console.log(arguments[0],arguments[1]);
-    console.log(typeof arguments[0]);
-}
-test(1);
-/*
-1 "[object Arguments]"
-1 undefined
-number
-*/
-可
 ```
 
 ## JavaScript 标准库
