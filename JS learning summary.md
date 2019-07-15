@@ -1,5 +1,40 @@
 # JS Learning summary
 
+## JavaScript参考文档
+
+### 表达式和运算符
+
+#### yield
+
+yield 关键字用来暂停和恢复一个生成器函数（(function* 或遗留的生成器函数）。
+yield关键字使生成器函数执行暂停，yield关键字后面的表达式的值返回给生成器的调用者。它可以被认为是一个基于生成器的版本的return关键字。
+
+yield关键字实际返回一个IteratorResult对象，它有两个属性，value和done。value属性是对yield表达式求值的结果，而done是false，表示生成器函数尚未完全完成。
+
+一旦遇到 yield 表达式，生成器的代码将被暂停运行，直到生成器的 next() 方法被调用。每次调用生成器的next()方法时，生成器都会恢复执行，直到达到以下某个值：
+
+yield，导致生成器再次暂停并返回生成器的新值。 下一次调用next()时，在yield之后紧接着的语句继续执行。
+throw用于从生成器中抛出异常。这让生成器完全停止执行，并在调用者中继续执行，正如通常情况下抛出异常一样。
+到达生成器函数的结尾；在这种情况下，生成器的执行结束，并且IteratorResult给调用者返回undefined并且done为true。
+到达return 语句。在这种情况下，生成器的执行结束，并将IteratorResult返回给调用者，其值是由return语句指定的，并且done 为true。
+如果将参数传递给生成器的next()方法，则该值将成为生成器当前yield操作返回的值。
+
+在生成器的代码路径中的yield运算符，以及通过将其传递给Generator.prototype.next()指定新的起始值的能力之间，生成器提供了强大的控制力。
+
+```javascript
+function* countAppleSales () {
+  var saleList = [3, 7, 5];
+  for (var i = 0; i < saleList.length; i++) {
+    yield saleList[i];
+  }
+}
+var appleStore = countAppleSales(); // Generator { }
+console.log(appleStore.next()); // { value: 3, done: false }
+console.log(appleStore.next()); // { value: 7, done: false }
+console.log(appleStore.next()); // { value: 5, done: false }
+console.log(appleStore.next()); // { value: undefined, done: true }
+```
+
 ## 基础
 
 ### 面向对象三大要素
@@ -58,6 +93,98 @@ elements.map(element => element.length); // [8, 6, 7, 9]
 elements.map(({ "length": lengthFooBArX }) => lengthFooBArX); // [8, 6, 7, 9]
 
 //不绑定this
+function Person() {
+  // Person() 构造函数定义 `this`作为它自己的实例.
+  this.age = 0;
+
+  setInterval(function growUp() {
+    // 在非严格模式, growUp()函数定义 `this`作为全局对象,
+    // 与在 Person()构造函数中定义的 `this`并不相同.
+    this.age++;
+  }, 1000);
+}
+
+var p = new Person();
+function Person() {
+  var that = this;
+  that.age = 0;
+
+  setInterval(function growUp() {
+    //  回调引用的是`that`变量, 其值是预期的对象
+    that.age++;
+  }, 1000);
+}
+
+//在ECMAScript 3/5中，通过将this值分配给封闭的变量，可以解决this问题。
+
+// 箭头函数不会创建自己的this,它只会从自己的作用域链的上一层继承this。因此，在下面的代码中，传递给setInterval的函数内的this与封闭函数中的this值相同：
+function Person(){
+  this.age = 0;
+
+  setInterval(() => {
+    this.age++; // |this| 正确地指向 p 实例
+  }, 1000);
+}
+
+var p = new Person();
+//通过 call 或 apply 调用
+var adder = {
+  base : 1,
+  add : function(a) {
+    var f = v => v + this.base;
+    return f(a);
+  },
+
+  addThruCall: function(a) {
+    var f = v => v + this.base;
+    var b = {
+      base : 2
+    };
+    return f.call(b, a);
+  }
+};
+
+console.log(adder.add(1));         // 输出 2
+console.log(adder.addThruCall(1)); // 仍然输出 2（而不是3 ——译者注）
+
+//不绑定arguments
+var arguments = [1, 2, 3];
+var arr = () => arguments[0];
+
+arr(); // 1
+
+function foo(n) {
+  var f = () => arguments[0] + n; // 隐式绑定 foo 函数的 arguments 对象. arguments[0] 是 n
+  return f();
+}
+
+foo(1); // 2
+
+//像函数一样使用箭头函数
+'use strict';
+var obj = {
+  i: 10,
+  b: () => console.log(this.i, this),
+  c: function() {
+    console.log( this.i, this)
+  }
+}
+obj.b();
+// undefined, Window{...}
+obj.c();
+// 10, Object {...}
+
+//使用 new 操作符
+箭头函数不能用作构造器，和 new一起用会抛出错误。
+var Foo = () => {};
+var foo = new Foo(); // TypeError: Foo is not a constructor
+
+//使用prototype属性
+箭头函数没有prototype属性。
+
+//使用 yield 关键字
+yield 关键字通常不能在箭头函数中使用（除非是嵌套在允许使用的函数内）。因此，箭头函数不能用作生成器。
+
 ```
 
 ### arguments
@@ -251,6 +378,25 @@ for (let i = 0; i < 10; i++) {
 
 console.log(i); // i is not defined
 
+```
+
+### function*
+
+function* 这种声明方式(function关键字后跟一个星号）会定义一个生成器函数 (generator function)，它返回一个  Generator  对象。
+
+```javascript
+function* generator(i) {
+  yield i;
+  yield i + 10;
+}
+
+var gen = generator(
+
+console.log(gen.next().value);
+// expected output: 10
+
+console.log(gen.next().value);
+// expected output: 20
 ```
 
 ## Debug

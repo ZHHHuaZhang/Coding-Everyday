@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const regexp1=/^a/g;
+        
+        const regexp2=new RegExp('^a','g');
+        const regexp3=new RegExp(/a/g);
+        const regexp4=new RegExp(/a/);
+        //修饰符g代表global
+
+        console.log('aabbcc'.match(regexp1));
+        console.log('babbcc'.match(regexp1));
+        console.log('aabbccaabbaa'.match(regexp3));
+        console.log('aabbccaabbaa'.match(regexp4));
+    </script>
+</body>
+</html>
